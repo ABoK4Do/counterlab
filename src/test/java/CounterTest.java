@@ -1,3 +1,5 @@
+import counter.Counter;
+import counter.MutexCounter;
 import org.junit.Test;
 
 import java.util.List;
@@ -5,22 +7,19 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CounterTest {
-    private static final Counter counter = new SeqCounter();
+    private static final Counter counter = new MutexCounter();
 
     @Test
     public void testSequentialExecution() throws ExecutionException, InterruptedException {
-        ExecutorService executors = Executors.newFixedThreadPool(1);
+        ExecutorService executors = Executors.newFixedThreadPool(10);
 
-        int incrementCallsCount = 11;
+        int incrementCallsCount = 110;
 
         List<Future> futures = range(0, incrementCallsCount)
                 .mapToObj(i -> executors.submit(incrementRunnable()))
